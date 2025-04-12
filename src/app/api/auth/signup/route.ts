@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-import { prisma } from '@/lib/prisma';
+import { auth } from '@/lib/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 // Input validation schema
 const signupSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });
@@ -17,41 +16,24 @@ export async function POST(req: Request) {
     // Validate input
     const validatedData = signupSchema.parse(body);
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: validatedData.email },
-    });
-
-    if (existingUser) {
-      return NextResponse.json(
-        { error: 'Email already registered' },
-        { status: 400 }
-      );
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(validatedData.password, 10);
-
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        name: validatedData.name,
-        email: validatedData.email,
-        password: hashedPassword,
-      },
-    });
-
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user;
+    // Create user with Firebase
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      validatedData.email,
+      validatedData.password
+    );
 
     return NextResponse.json(
       {
         message: 'Account created successfully',
-        user: userWithoutPassword,
+        user: {
+          email: userCredential.user.email,
+          uid: userCredential.user.uid,
+        },
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: error.errors[0].message },
@@ -59,9 +41,10 @@ export async function POST(req: Request) {
       );
     }
 
-    console.error('Signup error:', error);
+    // Handle Firebase errors
+    const errorMessage = error.code ? error.code.replace('auth/', '') : 'Failed to create account';
     return NextResponse.json(
-      { error: 'Failed to create account' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

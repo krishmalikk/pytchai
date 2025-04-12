@@ -5,11 +5,17 @@ const nextConfig = {
   output: 'export',  // Enable static exports
   images: {
     unoptimized: true, // Required for static export
-    domains: ['firebasestorage.googleapis.com'],
+    domains: [
+      'firebasestorage.googleapis.com',
+      'oaidalleapiprodscus.blob.core.windows.net',
+      'dalleproduse.blob.core.windows.net'
+    ],
   },
   basePath: '/pytchai', // Updated to match your repository name
   assetPrefix: '/pytchai/',
   trailingSlash: true,
+  // Disable server API routes in static export
+  rewrites: () => [],
 }
 
 module.exports = nextConfig 
