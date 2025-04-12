@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import PDFDocument from 'pdfkit';
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<Response> {
   try {
     const { mockupData } = await request.json();
 
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     doc.end();
 
     // Return the PDF as a blob
-    return new Promise((resolve) => {
+    return new Promise<Response>((resolve) => {
       doc.on('end', () => {
         const pdfBuffer = Buffer.concat(buffers);
         resolve(new NextResponse(pdfBuffer, {

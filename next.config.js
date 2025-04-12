@@ -14,8 +14,6 @@ const nextConfig = {
   basePath: '/pytchai', // Updated to match your repository name
   assetPrefix: '/pytchai/',
   trailingSlash: true,
-  // Disable server API routes in static export
-  rewrites: () => [],
 }
 
 module.exports = nextConfig 
