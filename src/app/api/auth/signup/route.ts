@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-import { prisma } from '@/lib/prisma';
+import { auth } from '@/lib/firebase';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 // Input validation schema
 const signupSchema = z.object({
@@ -17,44 +17,42 @@ export async function POST(req: Request) {
     // Validate input
     const validatedData = signupSchema.parse(body);
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: validatedData.email },
+    // Create user with Firebase
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      validatedData.email,
+      validatedData.password
+    );
+
+    // Update user profile with name
+    await updateProfile(userCredential.user, {
+      displayName: validatedData.name
     });
 
-    if (existingUser) {
+    // Return success response
+    return NextResponse.json(
+      {
+        message: 'Account created successfully',
+        user: {
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+          displayName: validatedData.name,
+        },
+      },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Email already registered' },
+        { error: error.errors[0].message },
         { status: 400 }
       );
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(validatedData.password, 10);
-
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        name: validatedData.name,
-        email: validatedData.email,
-        password: hashedPassword,
-      },
-    });
-
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user;
-
-    return NextResponse.json(
-      {
-        message: 'Account created successfully',
-        user: userWithoutPassword,
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    if (error instanceof z.ZodError) {
+    // Handle Firebase specific errors
+    if (error.code === 'auth/email-already-in-use') {
       return NextResponse.json(
-        { error: error.errors[0].message },
+        { error: 'Email already registered' },
         { status: 400 }
       );
     }
