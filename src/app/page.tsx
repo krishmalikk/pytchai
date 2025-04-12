@@ -18,7 +18,7 @@ import { StartupPitch } from '@/components/templates/StartupPitch';
 import { db } from '@/lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { FAQ } from '@/components/FAQ';
-import { Footer } from '@/components/Footer';
+import Footer from '@/components/Footer';
 
 type OutputType = 'website' | 'pitchDeck';
 

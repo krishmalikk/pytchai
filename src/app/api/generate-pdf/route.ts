@@ -7,7 +7,7 @@ export async function POST(request: Request) {
 
     // Create a new PDF document
     const doc = new PDFDocument();
-    let buffers: Buffer[] = [];
+    const buffers: Buffer[] = [];
 
     // Collect PDF data chunks
     doc.on('data', buffer => buffers.push(buffer));
@@ -41,17 +41,19 @@ export async function POST(request: Request) {
     // Finalize the PDF
     doc.end();
 
-    // Return the PDF as a blob
-    return new Promise((resolve) => {
+    // Wait for the PDF to be generated
+    const pdfBuffer = await new Promise<Buffer>((resolve) => {
       doc.on('end', () => {
-        const pdfBuffer = Buffer.concat(buffers);
-        resolve(new NextResponse(pdfBuffer, {
-          headers: {
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': 'attachment; filename=pitch-deck.pdf',
-          },
-        }));
+        resolve(Buffer.concat(buffers));
       });
+    });
+
+    // Return the PDF as a response
+    return new NextResponse(pdfBuffer, {
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename=pitch-deck.pdf',
+      },
     });
 
   } catch (error) {
