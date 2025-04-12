@@ -6,7 +6,7 @@ const nextConfig = {
   images: {
     unoptimized: true, // Required for static export
   },
-  basePath: '/pytch', // Replace with your repository name
+  basePath: '/pytchai', // Updated to match your repository name
 }
 
 module.exports = nextConfig 
