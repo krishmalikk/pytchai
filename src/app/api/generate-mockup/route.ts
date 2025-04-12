@@ -3,6 +3,7 @@ import OpenAI from 'openai';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  organization: process.env.OPENAI_ORG_ID,
 });
 
 // Validate the response structure
@@ -26,31 +27,21 @@ function isValidResponse(data: any): boolean {
 
 export async function POST(request: Request) {
   try {
-    // Log the API key existence (not the key itself)
     if (!process.env.OPENAI_API_KEY) {
-      console.error('OpenAI API key is missing');
-      return NextResponse.json(
-        { error: 'OpenAI API key is not configured' },
-        { status: 500 }
-      );
+      throw new Error('OpenAI API key not configured');
     }
 
-    const body = await request.json();
-    console.log('Received request:', body);
-    
-    const { startupDescription, industry, targetAudience } = body;
+    const { description } = await request.json();
 
-    if (!startupDescription) {
+    if (!description) {
       return NextResponse.json(
-        { error: 'Startup description is required' },
+        { error: 'Description is required' },
         { status: 400 }
       );
     }
 
     const prompt = `Create engaging website content for a startup with the following details:
-Description: ${startupDescription}
-${industry ? `Industry: ${industry}` : ''}
-${targetAudience ? `Target Audience: ${targetAudience}` : ''}
+Description: ${description}
 
 Generate a JSON object with the following structure:
 {
