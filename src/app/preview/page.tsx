@@ -2,8 +2,9 @@
 
 import { templates, type TemplateProps } from '@/components/templates';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function PreviewPage() {
+function PreviewContent() {
   const searchParams = useSearchParams();
   
   try {
@@ -33,4 +34,16 @@ export default function PreviewPage() {
       </div>
     );
   }
+}
+
+export default function PreviewPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading preview...</p>
+      </div>
+    }>
+      <PreviewContent />
+    </Suspense>
+  );
 } 

@@ -2,8 +2,9 @@
 
 import { pitchTemplates, type PitchDeckProps } from '@/components/pitch-templates';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function PitchPreviewPage() {
+function PitchPreviewContent() {
   const searchParams = useSearchParams();
   
   try {
@@ -33,4 +34,16 @@ export default function PitchPreviewPage() {
       </div>
     );
   }
+}
+
+export default function PitchPreviewPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading pitch deck...</p>
+      </div>
+    }>
+      <PitchPreviewContent />
+    </Suspense>
+  );
 } 
