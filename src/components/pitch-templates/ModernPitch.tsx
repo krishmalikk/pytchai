@@ -14,141 +14,316 @@ export function ModernPitch({
   financials,
   askAmount,
   useOfFunds,
-  primaryColor = '#2563EB',
+  primaryColor = '#0F172A',
 }: PitchDeckProps) {
   const slides = [
     // Title Slide
     {
-      title: companyName,
       content: (
         <div className="flex flex-col items-center justify-center text-center">
-          <h1 className="text-6xl font-bold mb-6">{companyName}</h1>
-          <p className="text-2xl text-gray-600 max-w-3xl">{tagline}</p>
+          <div className="mb-12 w-24 h-24 rounded-lg bg-gray-100 flex items-center justify-center">
+            <span className="text-3xl font-bold" style={{ color: primaryColor }}>
+              {companyName.charAt(0)}
+            </span>
+          </div>
+          <h1 className="text-5xl font-bold mb-6" style={{ color: primaryColor }}>{companyName}</h1>
+          <p className="text-xl text-gray-600 max-w-3xl">{tagline}</p>
         </div>
       ),
     },
-    // Problem Slide
+    // Problem
     {
-      title: "The Problem",
       content: (
-        <div className="space-y-6">
-          <h2 className="text-4xl font-bold mb-8">The Problem</h2>
-          <p className="text-xl text-gray-600 leading-relaxed">{problem}</p>
+        <div>
+          <h2 className="text-3xl font-bold mb-6" style={{ color: primaryColor }}>The Problem</h2>
+          <p className="text-xl text-gray-600 leading-relaxed">{problem.mainProblem}</p>
+          <div className="mt-8 grid grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Pain Points</h3>
+              <ul className="space-y-3">
+                {problem.painPoints.map((point, index) => (
+                  <li key={index} className="text-gray-600">• {point}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Market Gaps</h3>
+              <p className="text-gray-600">{problem.marketGaps}</p>
+              <div className="mt-4">
+                {problem.statistics.map((stat, index) => (
+                  <p key={index} className="text-gray-600 mt-2">• {stat}</p>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       ),
     },
-    // Solution Slide
+    // Solution
     {
-      title: "Our Solution",
       content: (
-        <div className="space-y-6">
-          <h2 className="text-4xl font-bold mb-8">Our Solution</h2>
-          <p className="text-xl text-gray-600 leading-relaxed">{solution}</p>
+        <div>
+          <h2 className="text-3xl font-bold mb-6" style={{ color: primaryColor }}>Our Solution</h2>
+          <p className="text-xl text-gray-600 leading-relaxed">{solution.coreSolution}</p>
+          <div className="mt-8 grid grid-cols-3 gap-6">
+            {solution.keyFeatures.map((feature, index) => (
+              <div key={index} className="p-6 bg-gray-50 rounded-lg">
+                <div className="w-12 h-12 bg-gray-200 rounded-full mb-4 flex items-center justify-center">
+                  <span className="text-xl font-bold" style={{ color: primaryColor }}>{index + 1}</span>
+                </div>
+                <p className="text-gray-800">{feature}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8">
+            <h3 className="text-xl font-semibold mb-4">Tech Stack</h3>
+            <div className="flex flex-wrap gap-4">
+              {solution.techStack.map((tech, index) => (
+                <span key={index} className="px-4 py-2 bg-gray-100 rounded-full text-gray-700">{tech}</span>
+              ))}
+            </div>
+          </div>
         </div>
       ),
     },
-    // Market Size Slide
+    // Market
     {
-      title: "Market Opportunity",
       content: (
-        <div className="space-y-6">
-          <h2 className="text-4xl font-bold mb-8">Market Opportunity</h2>
-          <p className="text-xl text-gray-600 leading-relaxed">{marketSize}</p>
+        <div>
+          <h2 className="text-3xl font-bold mb-6" style={{ color: primaryColor }}>Market Opportunity</h2>
+          <div className="grid grid-cols-3 gap-8 mb-8">
+            <div className="p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold mb-2">TAM</h3>
+              <p className="text-xl font-bold" style={{ color: primaryColor }}>{marketSize.tam}</p>
+            </div>
+            <div className="p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold mb-2">SAM</h3>
+              <p className="text-xl font-bold" style={{ color: primaryColor }}>{marketSize.sam}</p>
+            </div>
+            <div className="p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold mb-2">SOM</h3>
+              <p className="text-xl font-bold" style={{ color: primaryColor }}>{marketSize.som}</p>
+            </div>
+          </div>
+          <div className="mt-8">
+            <h3 className="text-xl font-semibold mb-4">Market Trends</h3>
+            <div className="grid grid-cols-2 gap-6">
+              {marketSize.trends.map((trend, index) => (
+                <div key={index} className="p-4 bg-gray-50 rounded-lg">
+                  <p className="text-gray-700">{trend}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       ),
     },
-    // Business Model Slide
+    // Business Model
     {
-      title: "Business Model",
       content: (
-        <div className="space-y-6">
-          <h2 className="text-4xl font-bold mb-8">Business Model</h2>
-          <p className="text-xl text-gray-600 leading-relaxed">{businessModel}</p>
+        <div>
+          <h2 className="text-3xl font-bold mb-6" style={{ color: primaryColor }}>Business Model</h2>
+          <div className="grid grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Revenue Streams</h3>
+              <div className="space-y-4">
+                {businessModel.revenueStreams.map((stream, index) => (
+                  <div key={index} className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-700">{stream}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Pricing Structure</h3>
+              <p className="text-gray-700 mb-4">{businessModel.pricing.structure}</p>
+              <div className="space-y-2">
+                {businessModel.pricing.tiers.map((tier, index) => (
+                  <div key={index} className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-gray-700">{tier}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       ),
     },
-    // Competition Slide
+    // Competition
     {
-      title: "Competition",
       content: (
-        <div className="space-y-6">
-          <h2 className="text-4xl font-bold mb-8">Competition</h2>
-          <p className="text-xl text-gray-600 leading-relaxed">{competition}</p>
+        <div>
+          <h2 className="text-3xl font-bold mb-6" style={{ color: primaryColor }}>Competitive Analysis</h2>
+          <div className="grid grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Direct Competitors</h3>
+              <div className="space-y-3">
+                {competition.directCompetitors.map((competitor, index) => (
+                  <div key={index} className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-700">{competitor}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Our Advantages</h3>
+              <div className="space-y-3">
+                {competition.advantages.map((advantage, index) => (
+                  <div key={index} className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-700">{advantage}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       ),
     },
-    // Traction Slide
+    // Traction
     {
-      title: "Traction",
       content: (
-        <div className="space-y-6">
-          <h2 className="text-4xl font-bold mb-8">Traction</h2>
-          <p className="text-xl text-gray-600 leading-relaxed">{traction}</p>
+        <div>
+          <h2 className="text-3xl font-bold mb-6" style={{ color: primaryColor }}>Traction</h2>
+          <div className="grid grid-cols-3 gap-8 mb-8">
+            <div className="p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold mb-2">Users</h3>
+              <p className="text-2xl font-bold" style={{ color: primaryColor }}>
+                {traction.currentMetrics.users}
+              </p>
+            </div>
+            <div className="p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold mb-2">Revenue</h3>
+              <p className="text-2xl font-bold" style={{ color: primaryColor }}>
+                {traction.currentMetrics.revenue}
+              </p>
+            </div>
+            <div className="p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold mb-2">Growth</h3>
+              <p className="text-2xl font-bold" style={{ color: primaryColor }}>
+                {traction.currentMetrics.growth}
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Milestones</h3>
+              <div className="space-y-3">
+                {traction.milestones.map((milestone, index) => (
+                  <div key={index} className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-700">{milestone}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Partnerships</h3>
+              <div className="space-y-3">
+                {traction.partnerships.map((partnership, index) => (
+                  <div key={index} className="p-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-700">{partnership}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       ),
     },
-    // Team Slide
+    // Team
     {
-      title: "Team",
       content: (
-        <div className="space-y-8">
-          <h2 className="text-4xl font-bold mb-8">Our Team</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div>
+          <h2 className="text-3xl font-bold mb-6" style={{ color: primaryColor }}>Our Team</h2>
+          <div className="grid grid-cols-3 gap-8">
             {team.map((member, index) => (
-              <div key={index} className="space-y-4">
-                <div className="w-32 h-32 mx-auto bg-gray-200 rounded-full" />
-                <h3 className="text-xl font-semibold text-center">{member.name}</h3>
-                <p className="text-gray-600 text-center">{member.role}</p>
-                <p className="text-sm text-gray-500 text-center">{member.bio}</p>
+              <div key={index} className="p-6 bg-gray-50 rounded-lg">
+                <div className="w-20 h-20 rounded-lg bg-gray-200 mb-4 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-gray-600">{member.name[0]}</span>
+                </div>
+                <h3 className="text-lg font-semibold mb-1">{member.name}</h3>
+                <p className="text-sm text-gray-500 mb-3">{member.role}</p>
+                <p className="text-sm text-gray-600 mb-3">{member.bio}</p>
+                <div className="space-y-1">
+                  {member.achievements.map((achievement, i) => (
+                    <p key={i} className="text-xs text-gray-500">• {achievement}</p>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
         </div>
       ),
     },
-    // Financials Slide
+    // Financials
     {
-      title: "Financials",
       content: (
-        <div className="space-y-6">
-          <h2 className="text-4xl font-bold mb-8">Financials</h2>
-          <div className="space-y-4">
-            {financials.revenue && (
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Revenue</h3>
-                <p className="text-gray-600">{financials.revenue}</p>
+        <div>
+          <h2 className="text-3xl font-bold mb-6" style={{ color: primaryColor }}>Financial Overview</h2>
+          <div className="grid grid-cols-3 gap-8">
+            <div className="p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold mb-2">Current Revenue</h3>
+              <p className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>
+                {financials.revenue.current}
+              </p>
+              <div className="space-y-2">
+                {financials.revenue.projections.map((projection, index) => (
+                  <p key={index} className="text-sm text-gray-600">{projection}</p>
+                ))}
               </div>
-            )}
-            {financials.funding && (
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Current Funding</h3>
-                <p className="text-gray-600">{financials.funding}</p>
+            </div>
+            <div className="p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold mb-2">Funding</h3>
+              <p className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>
+                {financials.funding.current}
+              </p>
+              <p className="text-sm text-gray-600">History: {financials.funding.history}</p>
+              <p className="text-sm text-gray-600">Valuation: {financials.funding.valuation}</p>
+            </div>
+            <div className="p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold mb-2">Key Metrics</h3>
+              <div className="space-y-2">
+                <p className="text-sm text-gray-600">CAC: {financials.metrics.cac}</p>
+                <p className="text-sm text-gray-600">LTV: {financials.metrics.ltv}</p>
+                <p className="text-sm text-gray-600">Burn Rate: {financials.metrics.burnRate}</p>
               </div>
-            )}
-            {financials.projections && (
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Projections</h3>
-                <p className="text-gray-600">{financials.projections}</p>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       ),
     },
-    // Ask Slide
+    // Investment Ask
     {
-      title: "The Ask",
       content: (
-        <div className="space-y-6">
-          <h2 className="text-4xl font-bold mb-8">The Ask</h2>
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-2xl font-semibold mb-4">Funding Goal</h3>
-              <p className="text-xl text-gray-600">{askAmount}</p>
+        <div>
+          <h2 className="text-3xl font-bold mb-6" style={{ color: primaryColor }}>Investment Ask</h2>
+          <div className="grid grid-cols-2 gap-8">
+            <div className="p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-xl font-semibold mb-4">Funding Request</h3>
+              <p className="text-3xl font-bold mb-4" style={{ color: primaryColor }}>{askAmount.total}</p>
+              <div className="space-y-3">
+                {askAmount.breakdown.map((item, index) => (
+                  <p key={index} className="text-gray-600">• {item}</p>
+                ))}
+              </div>
+              <div className="mt-4">
+                <p className="text-sm text-gray-600">Timeline: {askAmount.timeline}</p>
+                <p className="text-sm text-gray-600">Terms: {askAmount.terms}</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-2xl font-semibold mb-4">Use of Funds</h3>
-              <p className="text-xl text-gray-600">{useOfFunds}</p>
+            <div className="p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-xl font-semibold mb-4">Use of Funds</h3>
+              <div className="space-y-3">
+                {useOfFunds.allocation.map((item, index) => (
+                  <p key={index} className="text-gray-600">• {item}</p>
+                ))}
+              </div>
+              <div className="mt-4">
+                <p className="text-sm text-gray-600">Timeline: {useOfFunds.timeline}</p>
+                <h4 className="font-medium mt-4 mb-2">Key Milestones</h4>
+                {useOfFunds.milestones.map((milestone, index) => (
+                  <p key={index} className="text-sm text-gray-600">• {milestone}</p>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -158,18 +333,10 @@ export function ModernPitch({
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="max-w-6xl mx-auto px-4 py-16 space-y-32">
         {slides.map((slide, index) => (
-          <div
-            key={index}
-            className="min-h-screen flex items-center justify-center py-16"
-            style={{
-              borderBottom: index < slides.length - 1 ? `2px solid ${primaryColor}20` : 'none'
-            }}
-          >
-            <div className="w-full">
-              {slide.content}
-            </div>
+          <div key={index} className="min-h-[600px] flex items-center">
+            {slide.content}
           </div>
         ))}
       </div>
