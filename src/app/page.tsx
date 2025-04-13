@@ -120,15 +120,16 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          startupDescription,
-          industry,
-          targetAudience,
-        }),
+        body: JSON.stringify(
+          outputType === 'website' 
+            ? { description: startupDescription }
+            : { startupDescription, industry, targetAudience }
+        ),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate content');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to generate content');
       }
 
       const data = await response.json();
