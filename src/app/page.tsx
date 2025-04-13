@@ -7,7 +7,6 @@ import { getRandomTemplate, templates, type TemplateProps } from '@/components/t
 import React from 'react';
 import { auth, hasUserPaid } from '@/lib/firebase';
 import { User } from 'firebase/auth';
-import AuthModal from '@/components/AuthModal';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/components/AuthContext';
@@ -31,7 +30,6 @@ export default function Home() {
   const [mockupData, setMockupData] = useState<TemplateProps | null>(null);
   const [error, setError] = useState('');
   const [templateIndex, setTemplateIndex] = useState(0);
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const [hasPaid, setHasPaid] = useState(false);
   const [outputType, setOutputType] = useState<OutputType>('website');
   const [showCode, setShowCode] = useState(false);
@@ -92,7 +90,7 @@ export default function Home() {
 
   const handleGenerate = async () => {
     if (!user) {
-      setShowAuthModal(true);
+      router.push('/login');
       return;
     }
 
@@ -295,12 +293,18 @@ export default function Home() {
               </div>
             ) : (
               <>
-                <button onClick={() => setShowAuthModal(true)} className="text-[#f97316] px-4 py-1 hover:text-[#ea580c] transition-colors">
+                <Link 
+                  href="/login"
+                  className="text-[#f97316] px-4 py-1 hover:text-[#ea580c] transition-colors"
+                >
                   Log in
-                </button>
-                <button onClick={() => setShowAuthModal(true)} className="border border-[#f97316] text-[#f97316] px-4 py-1 rounded-md hover:bg-[#f97316] hover:text-black transition-colors">
+                </Link>
+                <Link 
+                  href="/signup"
+                  className="border border-[#f97316] text-[#f97316] px-4 py-1 rounded-md hover:bg-[#f97316] hover:text-black transition-colors"
+                >
                   Sign up
-                </button>
+                </Link>
               </>
             )}
           </div>
@@ -490,9 +494,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* Auth Modal */}
-      {showAuthModal && <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />}
 
       {/* Features Section */}
       <section className="py-16 md:py-24 bg-gray-900 text-white">
