@@ -28,7 +28,10 @@ function isValidResponse(data: any): boolean {
 export async function POST(request: Request) {
   try {
     if (!process.env.OPENAI_API_KEY) {
-      throw new Error('OpenAI API key not configured');
+      return NextResponse.json(
+        { error: 'OpenAI API key not configured' },
+        { status: 500 }
+      );
     }
 
     const { description } = await request.json();
@@ -58,21 +61,12 @@ Generate a JSON object with the following structure:
   ],
   "ctaText": "Compelling call-to-action text",
   "ctaLink": "#"
-}
-
-Requirements:
-1. Generate exactly 3 features
-2. Use a valid hex color code for primaryColor (e.g. #FF5733)
-3. Keep the response in valid JSON format
-4. Make content engaging and professional
-5. Include an appropriate emoji icon for each feature
-6. Ensure all text fields are properly filled
-7. Return exactly 3 features, no more, no less`;
+}`;
 
     try {
       console.log('Making OpenAI API call...');
       const completion = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-3.5-turbo-0125",
         messages: [
           {
             role: "system",
@@ -84,8 +78,8 @@ Requirements:
           }
         ],
         temperature: 0.7,
-        max_tokens: 1000,
-        response_format: { type: "json_object" }  // Ensure JSON response
+        max_tokens: 1500,
+        response_format: { type: "json_object" }
       });
 
       const response = completion.choices[0].message.content;
@@ -93,7 +87,7 @@ Requirements:
       if (!response) {
         console.error('Empty response from OpenAI');
         return NextResponse.json(
-          { error: 'Received empty response from OpenAI' },
+          { error: 'Failed to generate content. Please try again.' },
           { status: 500 }
         );
       }
@@ -102,8 +96,7 @@ Requirements:
 
       try {
         const parsedResponse = JSON.parse(response);
-        console.log('Parsed response:', parsedResponse);
-
+        
         // Ensure features array exists and has exactly 3 items
         if (!Array.isArray(parsedResponse.features) || parsedResponse.features.length !== 3) {
           parsedResponse.features = Array(3).fill({
@@ -113,12 +106,12 @@ Requirements:
           });
         }
 
-        // Ensure all required fields exist
+        // Ensure all required fields exist with fallbacks
         const safeResponse = {
           companyName: parsedResponse.companyName || 'Company Name',
           tagline: parsedResponse.tagline || 'Your Tagline Here',
           description: parsedResponse.description || 'Your description here',
-          primaryColor: parsedResponse.primaryColor || '#4F46E5',
+          primaryColor: parsedResponse.primaryColor?.match(/^#[0-9A-Fa-f]{6}$/) ? parsedResponse.primaryColor : '#4F46E5',
           features: parsedResponse.features.map(f => ({
             title: f.title || 'Feature',
             description: f.description || 'Description',
@@ -130,23 +123,23 @@ Requirements:
 
         return NextResponse.json(safeResponse);
       } catch (parseError) {
-        console.error('Failed to parse OpenAI response:', response);
+        console.error('Failed to parse OpenAI response:', parseError);
         return NextResponse.json(
-          { error: 'OpenAI returned invalid JSON format' },
+          { error: 'Failed to generate content. Please try again.' },
           { status: 500 }
         );
       }
-    } catch (openaiError) {
+    } catch (openaiError: any) {
       console.error('OpenAI API error:', openaiError);
       return NextResponse.json(
-        { error: openaiError instanceof Error ? openaiError.message : 'OpenAI API error' },
+        { error: 'Failed to generate content. Please try again.' },
         { status: 500 }
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Request processing error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to process request' },
+      { error: 'Failed to process request. Please try again.' },
       { status: 500 }
     );
   }
