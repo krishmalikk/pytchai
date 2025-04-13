@@ -16,7 +16,13 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Configure Google Provider
 const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('https://www.googleapis.com/auth/userinfo.email');
+googleProvider.addScope('https://www.googleapis.com/auth/userinfo.profile');
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
 
 // Payment verification functions
 export async function recordPayment(userId: string) {

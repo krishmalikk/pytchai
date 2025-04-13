@@ -46,26 +46,37 @@ export default function SignupPage() {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       
-      // Check if this is a new user by looking for their document in Firestore
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      
-      if (!userDoc.exists()) {
-        // Create a new user document
-        await setDoc(doc(db, 'users', user.uid), {
-          email: user.email,
-          name: user.displayName,
-          createdAt: new Date().toISOString(),
-        });
+      try {
+        // Check if this is a new user by looking for their document in Firestore
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
         
-        // Redirect new users to pricing
+        if (!userDoc.exists()) {
+          // Create a new user document
+          await setDoc(doc(db, 'users', user.uid), {
+            email: user.email,
+            name: user.displayName || name, // Use provided name if Google name is not available
+            createdAt: new Date().toISOString(),
+          });
+          // This is a new user, redirect to pricing
+          router.push('/pricing');
+        } else {
+          // Existing user, redirect to home
+          router.push('/');
+        }
+      } catch (dbError: any) {
+        console.error('Firestore error:', dbError);
+        // Even if Firestore fails, the user is authenticated, so redirect to pricing for new users
         router.push('/pricing');
-      } else {
-        // Existing user, redirect to home
-        router.push('/');
       }
     } catch (error: any) {
       console.error('Google sign-up error:', error);
-      setError('Failed to sign up with Google');
+      if (error.code === 'auth/popup-closed-by-user') {
+        setError('Sign up cancelled. Please try again.');
+      } else if (error.code === 'auth/popup-blocked') {
+        setError('Pop-up blocked. Please allow pop-ups for this site.');
+      } else {
+        setError('Failed to sign up with Google. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }

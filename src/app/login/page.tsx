@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider, db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -38,19 +38,37 @@ export default function LoginPage() {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       
-      // Check if this is a new user by looking for their document in Firestore
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      
-      if (!userDoc.exists()) {
-        // This is a new user, redirect to pricing
-        router.push('/pricing');
-      } else {
-        // Existing user, redirect to home
+      try {
+        // Check if this is a new user by looking for their document in Firestore
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        
+        if (!userDoc.exists()) {
+          // Create a new user document
+          await setDoc(doc(db, 'users', user.uid), {
+            email: user.email,
+            name: user.displayName,
+            createdAt: new Date().toISOString(),
+          });
+          // This is a new user, redirect to pricing
+          router.push('/pricing');
+        } else {
+          // Existing user, redirect to home
+          router.push('/');
+        }
+      } catch (dbError: any) {
+        console.error('Firestore error:', dbError);
+        // Even if Firestore fails, the user is authenticated, so redirect to home
         router.push('/');
       }
     } catch (error: any) {
       console.error('Google sign-in error:', error);
-      setError('Failed to sign in with Google');
+      if (error.code === 'auth/popup-closed-by-user') {
+        setError('Sign in cancelled. Please try again.');
+      } else if (error.code === 'auth/popup-blocked') {
+        setError('Pop-up blocked. Please allow pop-ups for this site.');
+      } else {
+        setError('Failed to sign in with Google. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
