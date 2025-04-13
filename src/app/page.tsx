@@ -437,18 +437,14 @@ export default function Home() {
                     title={outputType === 'website' ? 'Website Preview' : 'Pitch Deck Preview'}
                     onOpenFull={handleOpenFull}
                   >
-                    <div className="absolute inset-0 overflow-auto">
-                      <div className={`${outputType === 'website' ? 'bg-white' : 'bg-[#1a1a1a]'} relative`}>
-                        <div className="relative isolate">
-                          {outputType === 'website' ? (
-                            <div className="relative overflow-hidden">
-                              <CurrentTemplate {...mockupData} showNav={false} />
-                            </div>
-                          ) : (
-                            <StartupPitch {...mockupData} />
-                          )}
+                    <div className={`${outputType === 'website' ? 'bg-white' : 'bg-[#1a1a1a]'} relative`}>
+                      {outputType === 'website' ? (
+                        <div className="relative">
+                          <CurrentTemplate {...mockupData} showNav={false} />
                         </div>
-                      </div>
+                      ) : (
+                        <StartupPitch {...mockupData} />
+                      )}
                     </div>
                   </PreviewWindow>
                 </div>
