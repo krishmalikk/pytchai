@@ -9,34 +9,37 @@ export function DarkTemplate({
   features = [],
   ctaText,
   ctaLink,
+  showNav = true,
 }: TemplateProps) {
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-sm border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <span className="text-xl font-bold text-white">{companyName || 'Company Name'}</span>
-            </div>
-            <div className="hidden md:flex items-center space-x-6">
-              <a href="#features" className="text-sm text-gray-400 hover:text-white transition-colors">Features</a>
-              <a href="#pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Pricing</a>
-              <a href="#contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact</a>
-              <a
-                href={ctaLink || '#'}
-                className="px-4 py-2 rounded-md text-sm font-medium bg-opacity-20 hover:bg-opacity-30 transition-all text-white"
-                style={{ backgroundColor: primaryColor || '#4F46E5' }}
-              >
-                {ctaText || 'Get Started'}
-              </a>
+      {showNav && (
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-sm border-b border-gray-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center">
+                <span className="text-xl font-bold text-white">{companyName || 'Company Name'}</span>
+              </div>
+              <div className="hidden md:flex items-center space-x-6">
+                <a href="#features" className="text-sm text-gray-400 hover:text-white transition-colors">Features</a>
+                <a href="#pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Pricing</a>
+                <a href="#contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact</a>
+                <a
+                  href={ctaLink || '#'}
+                  className="px-4 py-2 rounded-md text-sm font-medium bg-opacity-20 hover:bg-opacity-30 transition-all text-white"
+                  style={{ backgroundColor: primaryColor || '#4F46E5' }}
+                >
+                  {ctaText || 'Get Started'}
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <section className={`${showNav ? 'pt-32' : 'pt-16'} pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden`}>
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black"></div>
           <div className="absolute inset-0" style={{ background: `radial-gradient(circle at 50% 50%, ${primaryColor}10 0%, transparent 50%)` }}></div>

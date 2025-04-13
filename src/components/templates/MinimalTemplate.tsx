@@ -9,34 +9,37 @@ export function MinimalTemplate({
   features,
   ctaText,
   ctaLink,
+  showNav = true,
 }: TemplateProps) {
   return (
     <div className="min-h-screen bg-white font-light">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <span className="text-lg tracking-tight">{companyName}</span>
-            </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-sm text-gray-600 hover:text-black">Features</a>
-              <a href="#pricing" className="text-sm text-gray-600 hover:text-black">Pricing</a>
-              <a href="#contact" className="text-sm text-gray-600 hover:text-black">Contact</a>
-              <a
-                href={ctaLink}
-                className="text-sm border-b-2 pb-1 transition-colors"
-                style={{ borderColor: primaryColor, color: primaryColor }}
-              >
-                {ctaText}
-              </a>
+      {showNav && (
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center">
+                <span className="text-lg tracking-tight">{companyName}</span>
+              </div>
+              <div className="hidden md:flex items-center space-x-8">
+                <a href="#features" className="text-sm text-gray-600 hover:text-black">Features</a>
+                <a href="#pricing" className="text-sm text-gray-600 hover:text-black">Pricing</a>
+                <a href="#contact" className="text-sm text-gray-600 hover:text-black">Contact</a>
+                <a
+                  href={ctaLink}
+                  className="text-sm border-b-2 pb-1 transition-colors"
+                  style={{ borderColor: primaryColor, color: primaryColor }}
+                >
+                  {ctaText}
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <section className={`${showNav ? 'pt-32' : 'pt-16'} pb-20 px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-3xl mx-auto">
           <h1 className="text-4xl sm:text-5xl font-light tracking-tight text-black mb-8 leading-tight">
             {tagline}

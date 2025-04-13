@@ -9,6 +9,7 @@ export function CreativeTemplate({
   features = [],
   ctaText,
   ctaLink,
+  showNav = true,
 }: TemplateProps) {
   const taglineWords = tagline.split(' ');
   const firstWord = taglineWords[0] || '';
@@ -23,43 +24,40 @@ export function CreativeTemplate({
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/60 backdrop-blur-lg">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center">
-              <span className="text-2xl font-bold italic" style={{ color: primaryColor }}>
-                {companyName || 'Company Name'}
-              </span>
-            </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-black transition-colors">
-                Features
-              </a>
-              <a href="#pricing" className="text-gray-600 hover:text-black transition-colors">
-                Pricing
-              </a>
-              <a href="#contact" className="text-gray-600 hover:text-black transition-colors">
-                Contact
-              </a>
-              <a
-                href={ctaLink || '#'}
-                className="relative px-6 py-2 overflow-hidden group"
-              >
-                <span className="relative z-10 text-white text-sm font-medium group-hover:text-white transition-colors">
-                  {ctaText || 'Get Started'}
+      {showNav && (
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex justify-between items-center h-20">
+              <div className="flex items-center">
+                <span className="text-2xl font-bold" style={{ color: primaryColor }}>
+                  {companyName}
                 </span>
-                <div 
-                  className="absolute inset-0 transform -skew-x-12"
-                  style={{ backgroundColor: primaryColor || '#4F46E5' }}
-                ></div>
-              </a>
+              </div>
+              <div className="hidden md:flex items-center space-x-8">
+                {['Features', 'Pricing', 'Contact'].map((item) => (
+                  <a
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    {item}
+                  </a>
+                ))}
+                <a
+                  href={ctaLink}
+                  className="px-6 py-2 text-sm font-medium rounded-full transition-colors"
+                  style={{ backgroundColor: primaryColor, color: 'white' }}
+                >
+                  {ctaText}
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 z-10">
+      <section className={`${showNav ? 'pt-32' : 'pt-16'} pb-20 px-4 sm:px-6 lg:px-8 z-10`}>
         <div className="max-w-5xl mx-auto">
           <div className="relative">
             <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold leading-tight">

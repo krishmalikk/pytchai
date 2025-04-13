@@ -9,6 +9,7 @@ export function ThreeDTemplate({
   features = [],
   ctaText = 'Get Started',
   ctaLink = '#',
+  showNav = true,
 }: TemplateProps) {
   // Ensure features is always an array and has at least 3 items for preview
   const previewFeatures = (features || []).map(feature => ({
@@ -20,44 +21,42 @@ export function ThreeDTemplate({
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="mx-4 my-6 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/20">
-            <div className="flex justify-between items-center h-16 px-6">
-              <div className="flex items-center">
-                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r"
-                  style={{ backgroundImage: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}88)` }}>
-                  {companyName}
-                </span>
-              </div>
-              <div className="hidden md:flex items-center space-x-1">
-                {['Features', 'Pricing', 'Contact'].map((item) => (
+      {showNav && (
+        <nav className="fixed top-0 left-0 right-0 z-50">
+          <div className="max-w-7xl mx-auto">
+            <div className="mx-4 my-6 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/20">
+              <div className="flex justify-between items-center h-16 px-6">
+                <div className="flex items-center">
+                  <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r" style={{ backgroundImage: `linear-gradient(to right, ${primaryColor}, ${primaryColor}CC)` }}>
+                    {companyName}
+                  </span>
+                </div>
+                <div className="hidden md:flex items-center space-x-8">
+                  {['Features', 'Pricing', 'Contact'].map((item) => (
+                    <a
+                      key={item}
+                      href={`#${item.toLowerCase()}`}
+                      className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                      {item}
+                    </a>
+                  ))}
                   <a
-                    key={item}
-                    href={`#${item.toLowerCase()}`}
-                    className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all"
+                    href={ctaLink}
+                    className="px-4 py-2 text-sm font-medium rounded-xl text-white shadow-lg transition-transform hover:scale-105"
+                    style={{ backgroundColor: primaryColor }}
                   >
-                    {item}
+                    {ctaText}
                   </a>
-                ))}
-                <a
-                  href={ctaLink}
-                  className="ml-2 px-4 py-2 text-sm font-medium text-white rounded-lg shadow-lg transform hover:-translate-y-0.5 transition-all"
-                  style={{ 
-                    backgroundColor: primaryColor,
-                    boxShadow: `0 4px 14px ${primaryColor}50`
-                  }}
-                >
-                  {ctaText}
-                </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 relative overflow-hidden">
+      <section className={`${showNav ? 'pt-32' : 'pt-16'} pb-20 px-4 sm:px-6 lg:px-8`}>
         <div className="absolute inset-0" style={{ 
           background: `radial-gradient(circle at 50% 50%, ${primaryColor}10 0%, transparent 50%)`
         }}></div>

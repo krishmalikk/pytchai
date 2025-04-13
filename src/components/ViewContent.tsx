@@ -26,7 +26,7 @@ export function ViewContent({ type }: { type: string }) {
   return (
     <div className="min-h-screen">
       {type === 'website' ? (
-        <ModernTemplate {...content} />
+        <ModernTemplate {...content} showNav={true} />
       ) : (
         <StartupPitch {...content} />
       )}

@@ -9,6 +9,7 @@ export function NatureTemplate({
   features = [],
   ctaText = 'Get Started',
   ctaLink = '#',
+  showNav = true,
 }: TemplateProps) {
   // Ensure features is always an array and has at least 3 items for preview
   const previewFeatures = (features || []).slice(0, 3).map(feature => ({
@@ -20,38 +21,40 @@ export function NatureTemplate({
   return (
     <div className="min-h-screen bg-[#F8F9F7] text-[#2C3E50]">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#F8F9F7]/80 backdrop-blur-md border-b border-[#2C3E50]/10">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center">
-              <span className="text-xl font-medium tracking-tight" style={{ color: primaryColor }}>
-                {companyName}
-              </span>
-            </div>
-            <div className="hidden md:flex items-center space-x-8">
-              {['Features', 'Pricing', 'Contact'].map((item) => (
+      {showNav && (
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#F8F9F7]/80 backdrop-blur-md border-b border-[#2C3E50]/10">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex justify-between items-center h-20">
+              <div className="flex items-center">
+                <span className="text-xl font-medium tracking-tight" style={{ color: primaryColor }}>
+                  {companyName}
+                </span>
+              </div>
+              <div className="hidden md:flex items-center space-x-8">
+                {['Features', 'Pricing', 'Contact'].map((item) => (
+                  <a
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    className="text-sm font-medium text-[#2C3E50]/70 hover:text-[#2C3E50] transition-colors"
+                  >
+                    {item}
+                  </a>
+                ))}
                 <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="text-sm font-medium text-[#2C3E50]/70 hover:text-[#2C3E50] transition-colors"
+                  href={ctaLink}
+                  className="px-4 py-2 text-sm font-medium rounded-full transition-colors"
+                  style={{ backgroundColor: primaryColor, color: 'white' }}
                 >
-                  {item}
+                  {ctaText}
                 </a>
-              ))}
-              <a
-                href={ctaLink}
-                className="px-4 py-2 text-sm font-medium rounded-full transition-colors"
-                style={{ backgroundColor: primaryColor, color: 'white' }}
-              >
-                {ctaText}
-              </a>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4">
+      <section className={`${showNav ? 'pt-32' : 'pt-16'} pb-20 px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
