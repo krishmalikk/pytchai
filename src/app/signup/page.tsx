@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '@/lib/firebase';
+import { auth, googleProvider, db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export default function SignupPage() {
   const [name, setName] = useState('');
@@ -42,9 +43,28 @@ export default function SignupPage() {
     setError('');
 
     try {
-      await signInWithPopup(auth, googleProvider);
-      router.push('/'); // Redirect to home page after successful signup
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      
+      // Check if this is a new user by looking for their document in Firestore
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      
+      if (!userDoc.exists()) {
+        // Create a new user document
+        await setDoc(doc(db, 'users', user.uid), {
+          email: user.email,
+          name: user.displayName,
+          createdAt: new Date().toISOString(),
+        });
+        
+        // Redirect new users to pricing
+        router.push('/pricing');
+      } else {
+        // Existing user, redirect to home
+        router.push('/');
+      }
     } catch (error: any) {
+      console.error('Google sign-up error:', error);
       setError('Failed to sign up with Google');
     } finally {
       setIsLoading(false);
